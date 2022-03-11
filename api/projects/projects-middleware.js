@@ -14,8 +14,12 @@ const verifyId = (req, res, next) => {
 };
 
 const verifyPayload = (req, res, next) => {
-  if (!req.body || Object.keys(req.body).length === 0) {
-    res.status(400).json({ message: 'Required information' });
+  const { name, description } = req.body;
+
+  if (!name || !name.trim()|| !description || !description.trim()) {
+    res.status(400).json({ message: 'Name and description is required' });
+  } else if (name === name || description === description) {
+    res.status(400).json({ message: 'Already updated Project'})
   } else {
     next();
   }
