@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Project = require('./projects-model');
-const { verifyId, verifyPayload } = require('./projects-middleware');
+const { verifyId, verifyPayload, verifyUpdate } = require('./projects-middleware');
 
 router.get('/', (req, res, next) => {
   Project.get()
@@ -22,7 +22,7 @@ router.post('/', verifyPayload, (req, res, next) => {
     .catch(next)
 });
 
-router.put('/:id', verifyId, verifyPayload, (req, res, next) => {
+router.put('/:id', verifyId, verifyPayload, verifyUpdate, (req, res, next) => {
   Project.update(req.params.id, req.body)
     .then(updatedProject => {
       res.json(updatedProject);
@@ -30,8 +30,27 @@ router.put('/:id', verifyId, verifyPayload, (req, res, next) => {
     .catch(next)
 });
 
+router.delete('/:id', verifyId, (req, res, next) => {
+  Project.remove(req.params.id)
+    .then(deletedProject => {
+      res.json(deletedProject);
+    })
+    .catch(next)
+});
+
+router.get('/:id/actions', verifyId, (req, res, next) => {
+  Project.getProjectActions(req.params.id)
+    .then(projectActions => {
+      res.json(projectActions);
+    })
+    .catch(next)
+
+});
+
 router.use((err, req, res, next) => {
   res.status(500).json({ message: 'Error in Database'});
 });
+
+
 
 module.exports = router;

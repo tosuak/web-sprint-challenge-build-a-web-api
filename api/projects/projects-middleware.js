@@ -18,15 +18,26 @@ const verifyPayload = (req, res, next) => {
 
   if (!name || !name.trim()|| !description || !description.trim()) {
     res.status(400).json({ message: 'Name and description is required' });
-  } else if (name === name || description === description) {
-    res.status(400).json({ message: 'Already updated Project'})
   } else {
     next();
   }
 };
 
+const verifyUpdate = (req, res, next) => {
+  const { name, description } = req.body;
+
+  if (req.project.name === name && req.project.description === description) {
+    res.status(400).json(req.body)
+    next();
+  } 
+  else {
+    next();
+  }
+}
+
 module.exports = 
 {
   verifyId,
-  verifyPayload
+  verifyPayload,
+  verifyUpdate
 };
